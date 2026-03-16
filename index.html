@@ -21,8 +21,8 @@
       --bg: #faf8f4;
       --surface: #f0ede6;
       --border: #dedad2;
-      --accent: #2e8b57;
-      --accent2: #1a6b40;
+      --accent: #6b21a8;
+      --accent2: #4c1d95;
       --text: #1c1a16;
       --muted: #8a8680;
       --loud: #0a0a08;
@@ -77,7 +77,13 @@
       border-bottom: 1px solid var(--border);
     }
 
-    /* ── Nav ── */
+    html.light .open-badge {
+      color: #16a34a;
+      border-color: #16a34a;
+    }
+    html.light .open-dot {
+      background: #16a34a;
+    }
     .hero-nav {
       display: flex;
       align-items: center;
@@ -671,6 +677,10 @@
         <strong>Languages</strong>
         English (Fluent) · Mandarin Chinese (Fluent)
       </div>
+      <div class="about-loc">
+        <strong>Work Authorization</strong>
+        US Citizen · No Sponsorship Required
+      </div>
     </div>
   </div>
 </section>
@@ -718,7 +728,7 @@
 
     <div class="project-card">
       <div class="project-num">01</div>
-      <div class="project-title">Phreddit</div>
+      <div class="project-title">💬 Phreddit</div>
       <div class="project-meta">Team of 2 · Aug – Dec 2024</div>
       <p class="project-desc">
         A Reddit-like social platform with community creation, post & comment management, user authentication, and full CRUD functionality. Backend powered by MongoDB and Express.
@@ -735,7 +745,7 @@
 
     <div class="project-card">
       <div class="project-num">02</div>
-      <div class="project-title">Chrial Network</div>
+      <div class="project-title">🌐 Chrial Network</div>
       <div class="project-meta">Team of 60 · Sep – Dec 2025</div>
       <p class="project-desc">
         Decentralized BitTorrent-like P2P file sharing platform with blockchain integration. Contributed 12 core modules and 30+ backend services including HD wallet, DHT protocol, AES-256-GCM encryption, and multi-protocol support.
@@ -752,7 +762,7 @@
 
     <div class="project-card">
       <div class="project-num">03</div>
-      <div class="project-title">Can You Escape</div>
+      <div class="project-title">🎮 Can You Escape</div>
       <div class="project-meta">Team of 2 · Visual Novel · 2026</div>
       <p class="project-desc">
         A narrative escape room game built in Ren'Py. Players wake up chained in a mysterious room and must solve puzzles — sudoku, combination locks, inventory items, hidden clues — across multiple rooms to escape before the timer runs out. Features branching story choices, a villain, ambient audio, and a full countdown system.
@@ -839,7 +849,6 @@
   <p class="footer-copy">© 2026 · New York, NY · <a href="mailto:A.zhang0731@gmail.com" style="color:var(--accent);text-decoration:none;">A.zhang0731@gmail.com</a></p>
   <a href="Resume.pdf" target="_blank" download="Amy_Zhang_Resume.pdf" style="display:inline-flex;align-items:center;gap:0.5rem;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--bg);background:var(--accent);padding:8px 18px;text-decoration:none;transition:opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">↓ Resume</a>
 </footer>
-
 <script>
   function toggleTheme() {
     const html = document.documentElement;
