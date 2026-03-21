@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Amy Zhang — Software Engineer</title>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
     :root {
       --bg: #0a0a08;
@@ -15,6 +15,7 @@
       --text: #e8e6e0;
       --muted: #6a6860;
       --loud: #ffffff;
+      --sidebar-w: 200px;
     }
 
     html.light {
@@ -28,35 +29,22 @@
       --loud: #0a0a08;
     }
 
-    /* ── Theme toggle ── */
-    .theme-toggle {
-      background: none;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      padding: 6px 12px;
-      cursor: pointer;
-      transition: color 0.2s, border-color 0.2s;
-    }
-    .theme-toggle:hover { color: var(--accent); border-color: var(--accent); }
+    html.light .open-badge { color: #16a34a; border-color: #16a34a; }
+    html.light .open-dot { background: #16a34a; }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     html { scroll-behavior: smooth; }
 
     body {
       background: var(--bg);
       color: var(--text);
-      font-family: 'DM Mono', monospace;
-      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
       line-height: 1.7;
-      overflow-x: hidden;
+      display: flex;
+      min-height: 100vh;
     }
 
-    /* ── Noise overlay ── */
     body::before {
       content: '';
       position: fixed;
@@ -67,171 +55,292 @@
       opacity: 0.4;
     }
 
-    /* ── Hero ── */
-    .hero {
+    /* ── Sidebar ── */
+    .sidebar {
+      width: var(--sidebar-w);
       min-height: 100vh;
-      display: grid;
-      grid-template-rows: auto 1fr auto;
-      padding: 2rem;
-      position: relative;
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      padding: 2rem 0;
+      z-index: 100;
+      transition: transform 0.3s ease;
+    }
+
+    .sidebar-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.8rem;
+      color: var(--loud);
+      line-height: 1;
+      padding: 0 1.5rem 1.5rem;
       border-bottom: 1px solid var(--border);
+      letter-spacing: 0.02em;
     }
 
-    html.light .open-badge {
-      color: #16a34a;
-      border-color: #16a34a;
-    }
-    html.light .open-dot {
-      background: #16a34a;
-    }
-    .hero-nav {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-
-    .nav-left {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    .nav-name {
-      font-family: 'DM Mono', monospace;
-      font-size: 12px;
-      font-weight: 400;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--text);
-    }
+    .sidebar-name span { display: block; color: var(--accent); }
 
     .open-badge {
       display: inline-flex;
       align-items: center;
       gap: 0.4rem;
-      font-size: 10px;
+      font-size: 9px;
       letter-spacing: 0.08em;
       text-transform: uppercase;
       color: var(--accent2);
       border: 1px solid var(--accent2);
       padding: 3px 9px;
       border-radius: 999px;
+      margin: 1rem 1.5rem 0;
+      width: fit-content;
     }
 
     .open-dot {
-      width: 6px; height: 6px;
+      width: 5px; height: 5px;
       background: var(--accent2);
       border-radius: 50%;
-      animation: blink 2s ease-in-out infinite;
+      animation: pulse 2s ease-in-out infinite;
     }
+
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
     .nav-links {
       display: flex;
-      align-items: center;
-      gap: 0.25rem;
+      flex-direction: column;
+      margin-top: 2rem;
+      flex: 1;
     }
 
     .nav-links a {
-      font-size: 11px;
-      letter-spacing: 0.1em;
+      font-size: 12px;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
       color: var(--muted);
       text-decoration: none;
-      padding: 6px 12px;
-      border: 1px solid transparent;
+      padding: 0.65rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      border-left: 2px solid transparent;
+      transition: color 0.2s, border-color 0.2s, background 0.2s;
+    }
+
+    .nav-links a:hover, .nav-links a.active {
+      color: var(--accent);
+      border-left-color: var(--accent);
+      background: rgba(200, 240, 60, 0.04);
+    }
+
+    html.light .nav-links a:hover,
+    html.light .nav-links a.active { background: rgba(107, 33, 168, 0.06); }
+
+    .nav-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--border);
+      flex-shrink: 0;
+      transition: background 0.2s;
+    }
+
+    .nav-links a:hover .nav-dot,
+    .nav-links a.active .nav-dot { background: var(--accent); }
+
+    .sidebar-bottom {
+      padding: 1.5rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .theme-toggle {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 6px 10px;
+      cursor: pointer;
+      width: 100%;
+      text-align: left;
       transition: color 0.2s, border-color 0.2s;
     }
+    .theme-toggle:hover { color: var(--accent); border-color: var(--accent); }
 
-    .nav-links a:hover {
-      color: var(--accent);
-      border-color: var(--border);
+    .sidebar-action {
+      display: block;
+      text-align: center;
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
     }
 
-    .hero-center {
+    .sidebar-action-outline {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+    .sidebar-action-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+    .sidebar-action-filled {
+      background: var(--accent);
+      border: 1px solid var(--accent);
+      color: var(--bg);
+      font-weight: 600;
+    }
+    .sidebar-action-filled:hover { opacity: 0.85; }
+
+    /* ── Hamburger ── */
+    .hamburger {
+      display: none;
+      position: fixed;
+      top: 1rem; left: 1rem;
+      z-index: 200;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      width: 40px; height: 40px;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      cursor: pointer;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 18px; height: 1.5px;
+      background: var(--text);
+      transition: all 0.3s ease;
+    }
+
+    .hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 99;
+    }
+    .sidebar-overlay.open { display: block; }
+
+    /* ── Main ── */
+    .main { margin-left: var(--sidebar-w); flex: 1; min-width: 0; }
+
+    /* ── Hero ── */
+    .hero {
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      padding: 4rem 0 2rem;
+      padding: 4rem 3rem;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
     }
 
-    .hero-label {
+    .hero-role {
       font-size: 11px;
-      letter-spacing: 0.2em;
+      letter-spacing: 0.25em;
       text-transform: uppercase;
       color: var(--muted);
-      margin-bottom: 1rem;
+      margin-bottom: 1.25rem;
     }
 
     h1 {
       font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(5rem, 14vw, 12rem);
-      line-height: 0.9;
+      font-size: clamp(5rem, 13vw, 12rem);
+      line-height: 0.88;
       color: var(--loud);
       letter-spacing: 0.01em;
+      margin-bottom: 0;
     }
 
     h1 .accent-line {
-      color: var(--accent);
+      font-family: 'Instrument Serif', serif;
+      font-style: italic;
+      font-size: clamp(4.5rem, 12vw, 11rem);
+      color: transparent;
+      -webkit-text-stroke: 1.5px var(--loud);
       display: block;
+      letter-spacing: -0.01em;
     }
+
+    html.light h1 .accent-line { -webkit-text-stroke-color: var(--loud); }
 
     .hero-tagline {
-      margin-top: 2rem;
-      max-width: 480px;
-      font-style: italic;
-      font-family: 'Instrument Serif', serif;
-      font-size: 1.15rem;
+      margin-top: 1.75rem;
+      font-size: 13.5px;
       color: var(--muted);
-      line-height: 1.6;
-    }
-
-    .hero-bottom {
       display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
+      align-items: center;
+      gap: 0.5rem;
       flex-wrap: wrap;
-      gap: 1rem;
     }
 
-    .contact-row {
+    .hero-tagline em {
+      font-family: 'Instrument Serif', serif;
+      font-style: italic;
+      color: var(--accent);
+      font-size: 15px;
+    }
+
+    .hero-buttons {
       display: flex;
       flex-wrap: wrap;
-      gap: 1.5rem;
+      gap: 0.75rem;
+      margin-top: 2.5rem;
     }
 
-    .contact-row a {
-      color: var(--text);
-      text-decoration: none;
+    .hero-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 10px 20px;
+      border-radius: 999px;
+      font-family: 'DM Mono', monospace;
       font-size: 12px;
       letter-spacing: 0.05em;
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 2px;
-      transition: color 0.2s, border-color 0.2s;
-    }
-    .contact-row a:hover { color: var(--accent); border-color: var(--accent); }
-
-    .scroll-hint {
-      font-size: 11px;
-      color: var(--muted);
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      animation: blink 2s ease-in-out infinite;
+      text-decoration: none;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      transition: all 0.2s ease;
     }
 
-    @keyframes blink {
-      0%, 100% { opacity: 1; } 50% { opacity: 0.3; }
+    .hero-btn-filled {
+      background: var(--accent);
+      color: var(--bg);
+      border-color: var(--accent);
+      font-weight: 600;
     }
 
-    /* ── Big number decoration ── */
+    .hero-btn-filled:hover { opacity: 0.85; transform: translateY(-1px); }
+
+    .hero-btn-outline {
+      background: transparent;
+      color: var(--text);
+      border-color: var(--border);
+    }
+
+    .hero-btn-outline:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-1px); }
+
     .bg-number {
       position: absolute;
-      right: 2rem;
-      top: 50%;
+      right: 2rem; top: 50%;
       transform: translateY(-50%);
       font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(10rem, 30vw, 28rem);
+      font-size: clamp(10rem, 25vw, 22rem);
       color: transparent;
       -webkit-text-stroke: 1px var(--border);
       line-height: 1;
@@ -240,19 +349,9 @@
     }
 
     /* ── Sections ── */
-    section {
-      padding: 5rem 2rem;
-      border-bottom: 1px solid var(--border);
-      max-width: 1100px;
-      margin: 0 auto;
-    }
+    section { padding: 5rem 3rem; border-bottom: 1px solid var(--border); }
 
-    .section-header {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      margin-bottom: 3rem;
-    }
+    .section-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 3rem; }
 
     .section-tag {
       font-size: 10px;
@@ -264,11 +363,7 @@
       flex-shrink: 0;
     }
 
-    .section-line {
-      flex: 1;
-      height: 1px;
-      background: var(--border);
-    }
+    .section-line { flex: 1; height: 1px; background: var(--border); }
 
     h2 {
       font-family: 'Bebas Neue', sans-serif;
@@ -276,6 +371,46 @@
       color: var(--loud);
       letter-spacing: 0.02em;
     }
+
+    /* ── About ── */
+    .about-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 1.5rem; }
+
+    .about-main {
+      padding: 2rem;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      position: relative;
+    }
+
+    .about-main::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: var(--accent2);
+    }
+
+    .about-main p { font-size: 13.5px; color: var(--muted); line-height: 1.85; }
+
+    .about-sidebar { display: flex; flex-direction: column; gap: 0.75rem; }
+
+    .info-card {
+      padding: 1rem 1.25rem;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      transition: border-color 0.2s;
+    }
+    .info-card:hover { border-color: var(--accent); }
+
+    .info-card-label {
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.3rem;
+    }
+
+    .info-card-value { font-size: 12.5px; color: var(--text); }
 
     /* ── Education ── */
     .edu-card {
@@ -297,32 +432,11 @@
       background: var(--accent);
     }
 
-    .edu-card h3 {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 1.6rem;
-      color: var(--loud);
-      letter-spacing: 0.04em;
-    }
-
-    .edu-card .degree {
-      font-size: 13px;
-      color: var(--muted);
-      margin-top: 0.25rem;
-    }
-
-    .edu-card .gpa {
-      font-size: 11px;
-      letter-spacing: 0.1em;
-      color: var(--accent2);
-      margin-top: 0.5rem;
-    }
-
-    .edu-card .courses {
-      margin-top: 1rem;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }
+    .edu-card h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; color: var(--loud); letter-spacing: 0.04em; }
+    .edu-card .degree { font-size: 13px; color: var(--muted); margin-top: 0.25rem; }
+    .edu-card .gpa { font-size: 11px; letter-spacing: 0.1em; color: var(--accent2); margin-top: 0.5rem; }
+    .edu-card .courses { margin-top: 1rem; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .date-badge { font-size: 11px; color: var(--muted); letter-spacing: 0.05em; white-space: nowrap; }
 
     .tag {
       font-size: 10px;
@@ -332,73 +446,12 @@
       border: 1px solid var(--border);
       color: var(--muted);
     }
-
-    .tag.highlight {
-      border-color: var(--accent2);
-      color: var(--accent2);
-    }
-
-    .date-badge {
-      font-size: 11px;
-      color: var(--muted);
-      letter-spacing: 0.05em;
-      white-space: nowrap;
-    }
-
-    /* ── Experience ── */
-    .exp-list { display: flex; flex-direction: column; gap: 1.5rem; }
-
-    .exp-item {
-      display: grid;
-      grid-template-columns: 3px 1fr;
-      gap: 1.5rem;
-    }
-
-    .exp-line { background: var(--border); border-radius: 2px; }
-    .exp-item:hover .exp-line { background: var(--accent); transition: background 0.3s; }
-
-    .exp-title {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 1.3rem;
-      color: var(--loud);
-      letter-spacing: 0.04em;
-    }
-
-    .exp-company {
-      font-size: 11px;
-      color: var(--accent);
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-    }
-
-    .exp-date { font-size: 11px; color: var(--muted); }
-
-    .exp-bullets {
-      margin-top: 0.75rem;
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 0.35rem;
-    }
-
-    .exp-bullets li {
-      padding-left: 1rem;
-      position: relative;
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .exp-bullets li::before {
-      content: '→';
-      position: absolute;
-      left: 0;
-      color: var(--border);
-    }
+    .tag.highlight { border-color: var(--accent2); color: var(--accent2); }
 
     /* ── Projects ── */
     .projects-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 1.5px;
       background: var(--border);
     }
@@ -426,430 +479,376 @@
 
     .project-card:hover::after { transform: scaleX(1); }
 
-    .project-num {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 4rem;
-      color: var(--border);
-      line-height: 1;
-      margin-bottom: 0.5rem;
-    }
+    .project-num { font-family: 'Bebas Neue', sans-serif; font-size: 3.5rem; color: var(--border); line-height: 1; margin-bottom: 0.4rem; }
+    .project-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; color: var(--loud); letter-spacing: 0.03em; margin-bottom: 0.4rem; }
+    .project-meta { font-size: 10px; color: var(--accent); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 1rem; }
+    .project-desc { font-size: 12px; color: var(--muted); line-height: 1.7; }
+    .project-stack { margin-top: 1.5rem; display: flex; flex-wrap: wrap; gap: 0.4rem; }
 
-    .project-title {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 1.5rem;
-      color: var(--loud);
-      letter-spacing: 0.03em;
-      margin-bottom: 0.5rem;
-    }
-
-    .project-meta {
-      font-size: 10px;
-      color: var(--accent);
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      margin-bottom: 1rem;
-    }
-
-    .project-desc {
-      font-size: 12px;
-      color: var(--muted);
-      line-height: 1.7;
-    }
-
-    .project-stack {
-      margin-top: 1.5rem;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.4rem;
-    }
+    /* ── Experience ── */
+    .exp-list { display: flex; flex-direction: column; gap: 1.5rem; }
+    .exp-item { display: grid; grid-template-columns: 3px 1fr; gap: 1.5rem; }
+    .exp-line { background: var(--border); border-radius: 2px; }
+    .exp-item:hover .exp-line { background: var(--accent); transition: background 0.3s; }
+    .exp-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; color: var(--loud); letter-spacing: 0.04em; }
+    .exp-company { font-size: 11px; color: var(--accent); letter-spacing: 0.1em; text-transform: uppercase; }
+    .exp-date { font-size: 11px; color: var(--muted); }
+    .exp-bullets { margin-top: 0.75rem; list-style: none; display: flex; flex-direction: column; gap: 0.35rem; }
+    .exp-bullets li { padding-left: 1rem; position: relative; color: var(--muted); font-size: 13px; }
+    .exp-bullets li::before { content: '→'; position: absolute; left: 0; color: var(--border); }
 
     /* ── Skills ── */
     .skills-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-      gap: 1px;
-      background: var(--border);
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.25rem;
     }
 
-    .skill-cell {
-      background: var(--bg);
-      padding: 1rem;
-      text-align: center;
-      font-size: 12px;
-      color: var(--muted);
-      letter-spacing: 0.05em;
-      transition: background 0.2s, color 0.2s;
-    }
-
-    .skill-cell:hover {
+    .skill-category {
       background: var(--surface);
-      color: var(--accent);
-    }
-
-    /* ── About ── */
-    .about-grid {
-      display: grid;
-      grid-template-columns: 1.4fr 1fr;
-      gap: 1.5rem;
-    }
-
-    .about-main {
-      padding: 2rem;
       border: 1px solid var(--border);
-      background: var(--surface);
-      position: relative;
-      overflow: hidden;
+      border-radius: 16px;
+      padding: 1.5rem;
+      transition: border-color 0.2s;
     }
 
-    .about-main::before {
-      content: '';
-      position: absolute;
-      left: 0; top: 0; bottom: 0;
-      width: 3px;
-      background: var(--accent2);
-    }
+    .skill-category:hover { border-color: var(--accent); }
 
-    .about-main p {
-      font-size: 13.5px;
-      color: var(--muted);
-      line-height: 1.85;
-    }
-
-    .about-sidebar {
+    .skill-category-title {
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.25rem;
       display: flex;
-      flex-direction: column;
-      gap: 1rem;
+      align-items: center;
+      gap: 0.5rem;
     }
 
-    .about-stat {
-      padding: 1.25rem 1.5rem;
-      border: 1px solid var(--border);
-      background: var(--surface);
-    }
-
-    .about-stat-num {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 2.5rem;
-      color: var(--accent);
-      line-height: 1;
-    }
-
-    .about-stat-label {
+    .skill-category-title::before {
+      content: '✦';
       font-size: 10px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-top: 0.25rem;
     }
 
-    .about-loc {
-      padding: 1.25rem 1.5rem;
+    .skill-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .skill-chip {
+      font-size: 13px;
+      color: var(--text);
+      background: var(--bg);
       border: 1px solid var(--border);
-      background: var(--surface);
-      font-size: 12px;
-      color: var(--muted);
-      line-height: 1.7;
+      padding: 7px 16px;
+      border-radius: 999px;
+      letter-spacing: 0.03em;
+      transition: border-color 0.2s, color 0.2s;
     }
 
-    .about-loc strong {
-      display: block;
-      font-size: 10px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--accent2);
-      margin-bottom: 0.4rem;
-    }
-
-    @media (max-width: 700px) {
-      .about-grid { grid-template-columns: 1fr; }
-    }
+    .skill-chip:hover { border-color: var(--accent); color: var(--accent); }
 
     /* ── Footer ── */
     footer {
-      padding: 3rem 2rem;
+      padding: 3rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
       gap: 1rem;
-      max-width: 1100px;
-      margin: 0 auto;
     }
 
-    .footer-name {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 2rem;
-      color: var(--loud);
-    }
-
-    .footer-copy {
-      font-size: 11px;
-      color: var(--muted);
-      letter-spacing: 0.08em;
-    }
+    .footer-name { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--loud); }
+    .footer-copy { font-size: 11px; color: var(--muted); letter-spacing: 0.08em; }
 
     /* ── Animations ── */
-    .fade-up {
-      opacity: 0;
-      transform: translateY(30px);
-      animation: fadeUp 0.7s ease forwards;
-    }
+    .fade-up { opacity: 0; transform: translateY(30px); animation: fadeUp 0.7s ease forwards; }
+    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+    .delay-1 { animation-delay: 0.15s; }
+    .delay-2 { animation-delay: 0.3s; }
 
-    @keyframes fadeUp {
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .delay-1 { animation-delay: 0.1s; }
-    .delay-2 { animation-delay: 0.25s; }
-    .delay-3 { animation-delay: 0.4s; }
-    .delay-4 { animation-delay: 0.55s; }
-
-    @media (max-width: 600px) {
-      .bg-number { display: none; }
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.open { transform: translateX(0); }
+      .hamburger { display: flex; }
+      .main { margin-left: 0; }
+      .hero { padding: 5rem 1.5rem 3rem; }
+      section { padding: 3rem 1.5rem; }
+      .about-grid { grid-template-columns: 1fr; }
       .edu-card { grid-template-columns: 1fr; }
-      footer { flex-direction: column; align-items: flex-start; }
+      footer { padding: 2rem 1.5rem; flex-direction: column; align-items: flex-start; }
+      .bg-number { display: none; }
     }
   </style>
 </head>
 <body>
 
-<!-- ── HERO ── -->
-<div class="hero">
-  <nav class="hero-nav fade-up">
-    <div class="nav-left">
-      <span class="nav-name">Amy Zhang</span>
-      <span class="open-badge"><span class="open-dot"></span>Open to Work</span>
-    </div>
-    <div class="nav-links">
-      <a href="#about">About</a>
-      <a href="#education">Education</a>
-      <a href="#projects">Projects</a>
-      <a href="#experience">Experience</a>
-      <a href="#skills">Skills</a>
-      <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn">☀ Light</button>
-    </div>
+<!-- Hamburger -->
+<button class="hamburger" id="hamburger" onclick="toggleSidebar()">
+  <span></span><span></span><span></span>
+</button>
+<div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-name">Amy<span>Zhang</span></div>
+  <span class="open-badge"><span class="open-dot"></span>Open to Work</span>
+  <nav class="nav-links">
+    <a href="#about" class="active"><span class="nav-dot"></span>About</a>
+    <a href="#education"><span class="nav-dot"></span>Education</a>
+    <a href="#projects"><span class="nav-dot"></span>Projects</a>
+    <a href="#experience"><span class="nav-dot"></span>Experience</a>
+    <a href="#skills"><span class="nav-dot"></span>Skills</a>
   </nav>
-
-  <div class="hero-center">
-    <p class="hero-label fade-up delay-1">Portfolio — 2026</p>
-    <h1 class="fade-up delay-2">
-      Amy
-      <span class="accent-line">Zhang</span>
-    </h1>
+  <div class="sidebar-bottom">
+    <a href="Resume.pdf" target="_blank" download="Amy_Zhang_Resume.pdf" class="sidebar-action sidebar-action-outline">Resume ↗</a>
+    <a href="mailto:A.zhang0731@gmail.com" class="sidebar-action sidebar-action-filled">Get in Touch</a>
+    <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn">☀ Light</button>
   </div>
+</aside>
 
-  <div class="hero-bottom fade-up delay-3">
-    <div class="contact-row">
-      <a href="mailto:A.zhang0731@gmail.com">A.zhang0731@gmail.com</a>
-      <a href="tel:3476182095">(347) 618-2095</a>
-      <a href="https://www.linkedin.com/in/amy-zhang0731" target="_blank">LinkedIn ↗</a>
+<!-- Main -->
+<div class="main">
+
+  <!-- Hero -->
+  <div class="hero">
+    <p class="hero-role fade-up">Software Engineer · New York</p>
+    <h1 class="fade-up delay-1">Amy<span class="accent-line">Zhang</span></h1>
+    <p class="hero-tagline fade-up delay-1">CS grad from Stony Brook — <em>Open to new opportunities</em></p>
+    <div class="hero-buttons fade-up delay-2">
+      <a href="https://www.linkedin.com/in/amy-zhang0731" target="_blank" class="hero-btn hero-btn-filled">LinkedIn ↗</a>
+      <a href="Resume.pdf" target="_blank" download="Amy_Zhang_Resume.pdf" class="hero-btn hero-btn-filled" style="background:var(--accent2);border-color:var(--accent2);">Resume ↗</a>
+      <a href="#experience" class="hero-btn hero-btn-outline">View Experience</a>
+      <a href="#projects" class="hero-btn hero-btn-outline">View Projects</a>
     </div>
-    <p class="scroll-hint">↓ Scroll</p>
+    <div class="bg-number">AZ</div>
   </div>
 
-  <div class="bg-number">AZ</div>
+  <!-- About -->
+  <section id="about">
+    <div class="section-header">
+      <span class="section-tag">00</span>
+      <div class="section-line"></div>
+      <h2>About Me</h2>
+    </div>
+    <div class="about-grid">
+      <div class="about-main">
+        <p>I'm a Computer Science graduate from Stony Brook University with a strong foundation in full-stack web development, systems programming, and software engineering. I thrive in collaborative environments, write maintainable code, and pick up new tools and technologies quickly. I'm actively seeking opportunities where I can contribute, grow, and build software that makes a difference.</p>
+      </div>
+      <div class="about-sidebar">
+        <div class="info-card">
+          <div class="info-card-label">Education</div>
+          <div class="info-card-value">B.S. Computer Science — Stony Brook University</div>
+        </div>
+        <div class="info-card">
+          <div class="info-card-label">Location & Availability</div>
+          <div class="info-card-value">Based in New York, NY. Open to remote, hybrid, or on-site roles nationwide.</div>
+        </div>
+        <div class="info-card">
+          <div class="info-card-label">Email</div>
+          <div class="info-card-value"><a href="mailto:A.zhang0731@gmail.com" style="color:var(--text);text-decoration:none;">A.zhang0731@gmail.com</a></div>
+        </div>
+        <div class="info-card">
+          <div class="info-card-label">Languages</div>
+          <div class="info-card-value">English (Fluent) · Mandarin Chinese (Fluent)</div>
+        </div>
+        <div class="info-card">
+          <div class="info-card-label">Work Authorization</div>
+          <div class="info-card-value">US Citizen · No Sponsorship Required</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Education -->
+  <section id="education">
+    <div class="section-header">
+      <span class="section-tag">01</span>
+      <div class="section-line"></div>
+      <h2>Education</h2>
+    </div>
+    <div class="edu-card">
+      <div>
+        <h3>SUNY — Stony Brook University</h3>
+        <p class="degree">Bachelor of Science in Computer Science</p>
+        <p class="gpa">GPA: 3.2 / 4.0</p>
+        <div class="courses">
+          <p style="font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);width:100%;margin-bottom:0.5rem;">Relevant Coursework</p>
+          <span class="tag highlight">AI</span>
+          <span class="tag highlight">Web Security</span>
+          <span class="tag highlight">Data Science</span>
+          <span class="tag highlight">Multimedia Systems</span>
+          <span class="tag">Data Structures & Algorithms</span>
+          <span class="tag">Systems Programming</span>
+          <span class="tag">Software Development</span>
+          <span class="tag">Software Engineering</span>
+          <span class="tag">Linear Algebra</span>
+          <span class="tag">Probability & Statistics</span>
+        </div>
+      </div>
+      <div class="date-badge">Aug 2022 – Jan 2026</div>
+    </div>
+  </section>
+
+  <!-- Projects -->
+  <section id="projects">
+    <div class="section-header">
+      <span class="section-tag">02</span>
+      <div class="section-line"></div>
+      <h2>Projects</h2>
+    </div>
+    <div class="projects-grid">
+      <div class="project-card">
+        <div class="project-num">01</div>
+        <div class="project-title">💬 Phreddit</div>
+        <div class="project-meta">Team of 2 · Aug – Dec 2024</div>
+        <p class="project-desc">A Reddit-like social platform with community creation, post & comment management, user authentication, and full CRUD functionality. Backend powered by MongoDB and Express.</p>
+        <div class="project-stack">
+          <span class="tag">React.js</span>
+          <span class="tag">JavaScript</span>
+          <span class="tag">MongoDB</span>
+          <span class="tag">Express</span>
+          <span class="tag">Axios</span>
+          <span class="tag">HTML/CSS</span>
+        </div>
+      </div>
+      <div class="project-card">
+        <div class="project-num">02</div>
+        <div class="project-title">🌐 Chrial Network</div>
+        <div class="project-meta">Team of 60 · Sep – Dec 2025</div>
+        <p class="project-desc">Decentralized BitTorrent-like P2P file sharing platform with blockchain integration. Contributed 12 core modules and 30+ backend services including HD wallet, DHT protocol, AES-256-GCM encryption, and multi-protocol support.</p>
+        <div class="project-stack">
+          <span class="tag">Svelte 5</span>
+          <span class="tag">TypeScript</span>
+          <span class="tag">Rust</span>
+          <span class="tag">Tauri 2</span>
+          <span class="tag">Solidity</span>
+          <span class="tag">Ethereum</span>
+        </div>
+      </div>
+      <div class="project-card" onclick="window.location.href='can-you-escape.html'" style="cursor:pointer;">
+        <div class="project-num">03</div>
+        <div class="project-title">🎮 Can You Escape</div>
+        <div class="project-meta">Team of 2 · Visual Novel · 2026</div>
+        <p class="project-desc">A narrative escape room game built in Ren'Py. Players wake up chained in a mysterious room and must solve puzzles — sudoku, combination locks, inventory items, hidden clues — across multiple rooms to escape before the timer runs out. Features branching story choices, a villain, ambient audio, and a full countdown system.</p>
+        <div class="project-stack">
+          <span class="tag">Ren'Py</span>
+          <span class="tag">Python</span>
+          <span class="tag">Visual Novel</span>
+          <span class="tag">Game Design</span>
+        </div>
+        <p style="margin-top:1rem;font-size:11px;color:var(--accent);font-family:'DM Mono',monospace;letter-spacing:0.08em;">VIEW PROJECT →</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Experience -->
+  <section id="experience">
+    <div class="section-header">
+      <span class="section-tag">03</span>
+      <div class="section-line"></div>
+      <h2>Experience</h2>
+    </div>
+    <div class="exp-list">
+      <div class="exp-item">
+        <div class="exp-line"></div>
+        <div>
+          <div class="exp-company">ABI Home Health Care Service</div>
+          <div class="exp-title">Certified Home Health Aide</div>
+          <div class="exp-date">Feb 2024 – Feb 2025</div>
+          <ul class="exp-bullets">
+            <li>Provided personalized assistance to clients</li>
+            <li>Managed schedules, followed care plans, and maintained accurate records</li>
+          </ul>
+        </div>
+      </div>
+      <div class="exp-item">
+        <div class="exp-line"></div>
+        <div>
+          <div class="exp-company">The Children's Place</div>
+          <div class="exp-title">Sales Associate</div>
+          <div class="exp-date">Jun 2023 – Aug 2023</div>
+          <ul class="exp-bullets">
+            <li>Collaborated with coworkers on inventory stocking and organization</li>
+            <li>Delivered consistent customer service in a fast-paced retail environment</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Skills -->
+  <section id="skills">
+    <div class="section-header">
+      <span class="section-tag">04</span>
+      <div class="section-line"></div>
+      <h2>Skills</h2>
+    </div>
+    <div class="skills-grid">
+
+      <div class="skill-category">
+        <div class="skill-category-title">Languages</div>
+        <div class="skill-chips">
+          <span class="skill-chip">Java</span>
+          <span class="skill-chip">JavaScript</span>
+          <span class="skill-chip">TypeScript</span>
+          <span class="skill-chip">C</span>
+          <span class="skill-chip">Rust</span>
+          <span class="skill-chip">Python</span>
+          <span class="skill-chip">HTML</span>
+          <span class="skill-chip">CSS</span>
+        </div>
+      </div>
+
+      <div class="skill-category">
+        <div class="skill-category-title">Frameworks & Tools</div>
+        <div class="skill-chips">
+          <span class="skill-chip">React</span>
+          <span class="skill-chip">Svelte</span>
+          <span class="skill-chip">Node.js</span>
+          <span class="skill-chip">MongoDB</span>
+          <span class="skill-chip">Axios</span>
+          <span class="skill-chip">Git</span>
+          <span class="skill-chip">Tauri</span>
+          <span class="skill-chip">Ren'Py</span>
+          <span class="skill-chip">Blender</span>
+        </div>
+      </div>
+
+      <div class="skill-category">
+        <div class="skill-category-title">Productivity & Other</div>
+        <div class="skill-chips">
+          <span class="skill-chip">Google Workspace</span>
+          <span class="skill-chip">MS Office</span>
+          <span class="skill-chip">English</span>
+          <span class="skill-chip">Mandarin Chinese</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-name">Amy Zhang</div>
+    <p class="footer-copy">© 2026 · New York, NY · <a href="mailto:A.zhang0731@gmail.com" style="color:var(--accent);text-decoration:none;">A.zhang0731@gmail.com</a></p>
+    <a href="Resume.pdf" target="_blank" download="Amy_Zhang_Resume.pdf" style="display:inline-flex;align-items:center;gap:0.5rem;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--bg);background:var(--accent);padding:8px 18px;text-decoration:none;transition:opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">↓ Resume</a>
+  </footer>
+
 </div>
 
-<!-- ── ABOUT ── -->
-<section id="about">
-  <div class="section-header">
-    <span class="section-tag">00</span>
-    <div class="section-line"></div>
-    <h2>About Me</h2>
-  </div>
-
-  <div class="about-grid">
-    <div class="about-main">
-      <p>
-        I'm a Computer Science graduate from Stony Brook University with a strong foundation in full-stack web development, systems programming, and software engineering. I thrive in collaborative environments, write maintainable code, and pick up new tools and technologies quickly. I'm actively seeking opportunities where I can contribute, grow, and build software that makes a difference.
-      </p>
-    </div>
-    <div class="about-sidebar">
-      <div class="about-stat">
-        <div class="about-stat-num">3.2</div>
-        <div class="about-stat-label">GPA</div>
-      </div>
-      <div class="about-loc">
-        <strong>Location & Availability</strong>
-        Based in New York, NY. Open to remote, hybrid, or on-site roles nationwide.
-      </div>
-      <div class="about-loc">
-        <strong>Languages</strong>
-        English (Fluent) · Mandarin Chinese (Fluent)
-      </div>
-      <div class="about-loc">
-        <strong>Work Authorization</strong>
-        US Citizen · No Sponsorship Required
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ── EDUCATION ── -->
-<section id="education">
-  <div class="section-header">
-    <span class="section-tag">01</span>
-    <div class="section-line"></div>
-    <h2>Education</h2>
-  </div>
-
-  <div class="edu-card">
-    <div>
-      <h3>SUNY — Stony Brook University</h3>
-      <p class="degree">Bachelor of Science in Computer Science</p>
-      <p class="gpa">GPA: 3.2 / 4.0</p>
-      <div class="courses">
-        <p style="font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);width:100%;margin-bottom:0.5rem;">Relevant Coursework</p>
-        <span class="tag highlight">AI</span>
-        <span class="tag highlight">Web Security</span>
-        <span class="tag highlight">Data Science</span>
-        <span class="tag highlight">Multimedia Systems</span>
-        <span class="tag">Data Structures & Algorithms</span>
-        <span class="tag">Systems Programming</span>
-        <span class="tag">Software Development</span>
-        <span class="tag">Software Engineering</span>
-        <span class="tag">Linear Algebra</span>
-        <span class="tag">Probability & Statistics</span>
-      </div>
-    </div>
-    <div class="date-badge">Aug 2022 – Jan 2026</div>
-  </div>
-</section>
-
-<!-- ── PROJECTS ── -->
-<section id="projects">
-  <div class="section-header">
-    <span class="section-tag">02</span>
-    <div class="section-line"></div>
-    <h2>Projects</h2>
-  </div>
-
-  <div class="projects-grid">
-
-    <div class="project-card">
-      <div class="project-num">01</div>
-      <div class="project-title">💬 Phreddit</div>
-      <div class="project-meta">Team of 2 · Aug – Dec 2024</div>
-      <p class="project-desc">
-        A Reddit-like social platform with community creation, post & comment management, user authentication, and full CRUD functionality. Backend powered by MongoDB and Express.
-      </p>
-      <div class="project-stack">
-        <span class="tag">React.js</span>
-        <span class="tag">JavaScript</span>
-        <span class="tag">MongoDB</span>
-        <span class="tag">Express</span>
-        <span class="tag">Axios</span>
-        <span class="tag">HTML/CSS</span>
-      </div>
-    </div>
-
-    <div class="project-card">
-      <div class="project-num">02</div>
-      <div class="project-title">🌐 Chrial Network</div>
-      <div class="project-meta">Team of 60 · Sep – Dec 2025</div>
-      <p class="project-desc">
-        Decentralized BitTorrent-like P2P file sharing platform with blockchain integration. Contributed 12 core modules and 30+ backend services including HD wallet, DHT protocol, AES-256-GCM encryption, and multi-protocol support.
-      </p>
-      <div class="project-stack">
-        <span class="tag">Svelte 5</span>
-        <span class="tag">TypeScript</span>
-        <span class="tag">Rust</span>
-        <span class="tag">Tauri 2</span>
-        <span class="tag">Solidity</span>
-        <span class="tag">Ethereum</span>
-      </div>
-    </div>
-
-    <div class="project-card">
-      <div class="project-num">03</div>
-      <div class="project-title">🎮 Can You Escape</div>
-      <div class="project-meta">Team of 2 · Visual Novel · 2026</div>
-      <p class="project-desc">
-        A narrative escape room game built in Ren'Py. Players wake up chained in a mysterious room and must solve puzzles — sudoku, combination locks, inventory items, hidden clues — across multiple rooms to escape before the timer runs out. Features branching story choices, a villain, ambient audio, and a full countdown system.
-      </p>
-      <div class="project-stack">
-        <span class="tag">Ren'Py</span>
-        <span class="tag">Python</span>
-        <span class="tag">Visual Novel</span>
-        <span class="tag">Game Design</span>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<section id="experience">
-  <div class="section-header">
-    <span class="section-tag">03</span>
-    <div class="section-line"></div>
-    <h2>Experience</h2>
-  </div>
-
-  <div class="exp-list">
-    <div class="exp-item">
-      <div class="exp-line"></div>
-      <div>
-        <div class="exp-company">ABI Home Health Care Service</div>
-        <div class="exp-title">Certified Home Health Aide</div>
-        <div class="exp-date">Feb 2024 – Feb 2025</div>
-        <ul class="exp-bullets">
-          <li>Provided personalized assistance to clients</li>
-          <li>Managed schedules, followed care plans, and maintained accurate records</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="exp-item">
-      <div class="exp-line"></div>
-      <div>
-        <div class="exp-company">The Children's Place</div>
-        <div class="exp-title">Sales Associate</div>
-        <div class="exp-date">Jun 2023 – Aug 2023</div>
-        <ul class="exp-bullets">
-          <li>Collaborated with coworkers on inventory stocking and organization</li>
-          <li>Delivered consistent customer service in a fast-paced retail environment</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ── SKILLS ── -->
-<section id="skills">
-  <div class="section-header">
-    <span class="section-tag">04</span>
-    <div class="section-line"></div>
-    <h2>Skills</h2>
-  </div>
-
-  <div class="skills-grid">
-    <div class="skill-cell">Java</div>
-    <div class="skill-cell">JavaScript</div>
-    <div class="skill-cell">TypeScript</div>
-    <div class="skill-cell">C</div>
-    <div class="skill-cell">Rust</div>
-    <div class="skill-cell">Python</div>
-    <div class="skill-cell">HTML</div>
-    <div class="skill-cell">CSS</div>
-    <div class="skill-cell">React</div>
-    <div class="skill-cell">Svelte</div>
-    <div class="skill-cell">Node.js</div>
-    <div class="skill-cell">MongoDB</div>
-    <div class="skill-cell">Axios</div>
-    <div class="skill-cell">Git</div>
-    <div class="skill-cell">Tauri</div>
-    <div class="skill-cell">Google Workspace</div>
-    <div class="skill-cell">MS Office</div>
-    <div class="skill-cell">English</div>
-    <div class="skill-cell">Mandarin Chinese</div>
-  </div>
-</section>
-<footer>
-  <div class="footer-name">Amy Zhang</div>
-  <p class="footer-copy">© 2026 · New York, NY · <a href="mailto:A.zhang0731@gmail.com" style="color:var(--accent);text-decoration:none;">A.zhang0731@gmail.com</a></p>
-  <a href="Resume.pdf" target="_blank" download="Amy_Zhang_Resume.pdf" style="display:inline-flex;align-items:center;gap:0.5rem;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--bg);background:var(--accent);padding:8px 18px;text-decoration:none;transition:opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">↓ Resume</a>
-</footer>
 <script>
+  function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+    const hamburger = document.getElementById('hamburger');
+    sidebar.classList.toggle('open');
+    overlay.classList.toggle('open');
+    hamburger.classList.toggle('open');
+  }
+
   function toggleTheme() {
     const html = document.documentElement;
     const btn = document.getElementById('theme-btn');
@@ -861,6 +860,26 @@
       btn.textContent = '☾ Dark';
     }
   }
+
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => {
+      if (window.scrollY >= s.offsetTop - 200) current = s.id;
+    });
+    navLinks.forEach(a => {
+      a.classList.remove('active');
+      if (a.getAttribute('href') === '#' + current) a.classList.add('active');
+    });
+  });
+
+  navLinks.forEach(a => {
+    a.addEventListener('click', () => {
+      if (window.innerWidth <= 768) toggleSidebar();
+    });
+  });
 </script>
 </body>
 </html>
