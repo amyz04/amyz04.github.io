@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Voyage — Amy Zhang</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #161622; --surface: #1e1e2e; --border: #32324a;
+      --accent: #5DCAA5; --accent2: #38bdf8;
+      --text: #e8e6e0; --muted: #6a6860; --loud: #ffffff;
+    }
+    html.light {
+      --bg: #faf8f4; --surface: #f0ede6; --border: #dedad2;
+      --accent: #5DCAA5; --accent2: #0284c7;
+      --text: #1c1a16; --muted: #8a8680; --loud: #0a0a08;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.7; min-height: 100vh; }
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 10% 10%, rgba(93,202,165,0.18) 0%, transparent 55%),
+                  radial-gradient(ellipse 60% 70% at 90% 80%, rgba(56,189,248,0.14) 0%, transparent 55%),
+                  radial-gradient(ellipse 50% 50% at 55% 45%, rgba(93,202,165,0.07) 0%, transparent 60%);
+      pointer-events: none; z-index: 0;
+    }
+    html.light body::before {
+      background: radial-gradient(ellipse 80% 60% at 10% 10%, rgba(93,202,165,0.15) 0%, transparent 55%),
+                  radial-gradient(ellipse 60% 70% at 90% 80%, rgba(56,189,248,0.12) 0%, transparent 55%);
+    }
+    #bg-canvas { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; opacity: 0.6; }
+    .topnav {
+      position: sticky; top: 0; z-index: 100;
+      background: color-mix(in srgb, var(--surface) 85%, transparent);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 3rem; display: flex; align-items: center; justify-content: space-between;
+    }
+    .back-link { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; transition: color 0.2s; }
+    .back-link:hover { color: var(--accent); }
+    .topnav-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; color: var(--loud); letter-spacing: 0.04em; }
+    .topnav-right { display: flex; align-items: center; gap: 1rem; }
+    .theme-toggle { background: none; border: 1px solid var(--border); color: var(--muted); font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; padding: 5px 12px; border-radius: 999px; cursor: pointer; transition: color 0.2s, border-color 0.2s; }
+    .theme-toggle:hover { color: var(--accent); border-color: var(--accent); }
+    .hero { padding: 5rem 3rem 4rem; border-bottom: 1px solid var(--border); position: relative; overflow: hidden; z-index: 1; }
+    .wip-badge { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); border: 1px solid var(--accent); padding: 4px 12px; border-radius: 999px; margin-bottom: 1.5rem; }
+    .wip-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); animation: pulse 2s ease-in-out infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+    .hero-label { font-size: 11px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--muted); margin-bottom: 1rem; }
+    .hero h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(5rem, 12vw, 10rem); line-height: 0.88; color: var(--loud); letter-spacing: 0.01em; }
+    .hero h1 .outline { font-family: 'Instrument Serif', serif; font-style: italic; font-size: clamp(4rem, 10vw, 8.5rem); color: transparent; -webkit-text-stroke: 1.5px var(--loud); display: block; letter-spacing: -0.01em; }
+    .hero-sub { margin-top: 1.5rem; font-size: 14px; color: var(--muted); max-width: 560px; line-height: 1.8; }
+    .hero-meta { display: flex; flex-wrap: wrap; gap: 1.5rem; margin-top: 2rem; }
+    .meta-item { font-size: 11px; color: var(--muted); letter-spacing: 0.08em; }
+    .meta-item strong { color: var(--accent); display: block; font-size: 9px; text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 2px; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 2.5rem; }
+    .btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 10px 20px; border-radius: 999px; font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.05em; text-decoration: none; cursor: pointer; border: 1px solid var(--border); transition: all 0.2s ease; }
+    .btn-filled { background: var(--accent); color: var(--bg); border-color: var(--accent); font-weight: 600; }
+    .btn-filled:hover { opacity: 0.85; transform: translateY(-1px); }
+    .btn-outline { background: transparent; color: var(--text); }
+    .btn-outline:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-1px); }
+    .btn-disabled { background: transparent; color: var(--muted); cursor: not-allowed; opacity: 0.5; }
+    .bg-number { position: absolute; right: 2rem; top: 50%; transform: translateY(-50%); font-family: 'Bebas Neue', sans-serif; font-size: clamp(10rem, 22vw, 18rem); color: transparent; -webkit-text-stroke: 1px var(--border); line-height: 1; user-select: none; pointer-events: none; }
+    .content { max-width: 1100px; margin: 0 auto; padding: 0 3rem; position: relative; z-index: 1; }
+    .section { padding: 4rem 0; border-bottom: 1px solid var(--border); }
+    .section-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 2.5rem; }
+    .section-tag { font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--accent); border: 1px solid var(--accent); padding: 3px 10px; border-radius: 999px; flex-shrink: 0; }
+    .section-line { flex: 1; height: 1px; background: var(--border); }
+    .section h2 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2rem, 4vw, 3rem); color: var(--loud); letter-spacing: 0.02em; }
+    .overview-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 1.5rem; }
+    .overview-main { padding: 2rem; border: 1px solid var(--border); background: var(--surface); position: relative; border-radius: 16px; overflow: hidden; }
+    .overview-main::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--accent2); border-radius: 16px 0 0 16px; }
+    .overview-main p { font-size: 13.5px; color: var(--muted); line-height: 1.85; margin-bottom: 1rem; }
+    .overview-main p:last-child { margin-bottom: 0; }
+    .overview-sidebar { display: flex; flex-direction: column; gap: 0.75rem; }
+    .info-card { padding: 1rem 1.25rem; border: 1px solid var(--border); background: var(--surface); border-radius: 12px; transition: border-color 0.2s; }
+    .info-card:hover { border-color: var(--accent); }
+    .info-card-label { font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.3rem; }
+    .info-card-value { font-size: 12.5px; color: var(--text); }
+    .stack-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem; }
+    .stack-card { background: var(--surface); border: 1px solid var(--border); padding: 1.5rem; border-radius: 20px; transition: border-color 0.2s; position: relative; overflow: hidden; }
+    .stack-card::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent), var(--accent2)); transform: scaleX(0); transform-origin: left; border-radius: 0 0 20px 20px; transition: transform 0.4s ease; }
+    .stack-card:hover::after { transform: scaleX(1); }
+    .stack-card:hover { border-color: var(--accent); }
+    .stack-layer { font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.75rem; }
+    .stack-items { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .tag { font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 10px; border: 1px solid var(--border); color: var(--muted); border-radius: 999px; }
+    .tag.hi { border-color: var(--accent2); color: var(--accent2); }
+    .features-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.25rem; }
+    .feature-item { background: var(--surface); border: 1px solid var(--border); padding: 2rem; border-radius: 20px; transition: border-color 0.3s; }
+    .feature-item:hover { border-color: var(--accent); }
+    .feature-icon { font-size: 1.8rem; margin-bottom: 0.75rem; }
+    .feature-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; color: var(--loud); letter-spacing: 0.04em; margin-bottom: 0.4rem; }
+    .feature-desc { font-size: 12.5px; color: var(--muted); line-height: 1.7; }
+    .progress-list { display: flex; flex-direction: column; gap: 0.75rem; }
+    .progress-item { display: grid; grid-template-columns: 4px 1fr; gap: 1.5rem; padding: 1.25rem 1.25rem 1.25rem 0; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; transition: border-color 0.2s; }
+    .progress-item:hover { border-color: var(--accent); }
+    .progress-line { border-radius: 16px 0 0 16px; }
+    .progress-line.done { background: var(--accent2); }
+    .progress-line.wip  { background: var(--accent); }
+    .progress-line.todo { background: var(--border); }
+    .progress-label { font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 0.25rem; }
+    .label-done { color: var(--accent2); } .label-wip { color: var(--accent); } .label-todo { color: var(--muted); }
+    .progress-text { font-size: 13px; color: var(--text); }
+    .preview-note { padding: 2rem; border: 1px dashed var(--border); border-radius: 16px; text-align: center; color: var(--muted); font-size: 13px; font-family: 'DM Mono', monospace; letter-spacing: 0.05em; }
+    .design-grid { margin-top: 1.5rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.25rem; }
+    .design-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; font-size: 12px; color: var(--muted); }
+    .design-card-label { color: var(--accent); font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 0.5rem; }
+    footer { padding: 3rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; border-top: 1px solid var(--border); position: relative; z-index: 1; }
+    .footer-name { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--loud); }
+    .footer-copy { font-size: 11px; color: var(--muted); letter-spacing: 0.08em; }
+    @media (max-width: 768px) {
+      .topnav { padding: 1rem 1.5rem; } .hero { padding: 3rem 1.5rem; } .content { padding: 0 1.5rem; }
+      .overview-grid { grid-template-columns: 1fr; } .bg-number { display: none; }
+      footer { padding: 2rem 1.5rem; flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<nav class="topnav">
+  <a href="index.html" class="back-link">← Back to Portfolio</a>
+  <span class="topnav-name">Amy Zhang</span>
+  <div class="topnav-right">
+    <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn">☀ Light</button>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="content">
+    <div class="wip-badge"><span class="wip-dot"></span>In Progress</div>
+    <p class="hero-label">Side Project · 2026</p>
+    <h1>Voyage<span class="outline">Plan Together</span></h1>
+    <p class="hero-sub">A shared calendar and trip planning app — find the dates that work for everyone, coordinate itineraries, and plan group trips without the back-and-forth.</p>
+    <div class="hero-meta">
+      <div class="meta-item"><strong>Team</strong>2 people</div>
+      <div class="meta-item"><strong>Timeline</strong>2026 — ongoing</div>
+      <div class="meta-item"><strong>Role</strong>Full-Stack (Frontend + Backend)</div>
+      <div class="meta-item"><strong>Status</strong>Active Development</div>
+    </div>
+    <div class="hero-actions">
+      <span class="btn btn-disabled">GitHub (Private) ↗</span>
+      <span class="btn btn-disabled">Live Demo (Coming Soon)</span>
+    </div>
+  </div>
+  <div class="bg-number">V</div>
+</div>
+
+<div class="content">
+
+  <div class="section">
+    <div class="section-header"><span class="section-tag">00</span><div class="section-line"></div><h2>Overview</h2></div>
+    <div class="overview-grid">
+      <div class="overview-main">
+        <p>Voyage started from a real problem — planning trips with a group of friends means an endless cycle of "when are you free?" messages, calendar screenshots, and someone inevitably missing a date that works for everyone.</p>
+        <p>The app lets users connect their calendars (Google, Apple, or .ics import), find shared free windows automatically, propose trip dates, vote on them, and build out an itinerary together once dates are confirmed.</p>
+        <p>Built with a React + TypeScript frontend styled with Tailwind, and a Spring Boot REST API backend with JWT authentication, PostgreSQL, and Docker.</p>
+      </div>
+      <div class="overview-sidebar">
+        <div class="info-card"><div class="info-card-label">My Responsibilities</div><div class="info-card-value">Frontend UI, backend API, auth system, database schema, friend/invite system</div></div>
+        <div class="info-card"><div class="info-card-label">Partner's Responsibilities</div><div class="info-card-value">Registration flow, additional backend entities, itinerary backend</div></div>
+        <div class="info-card"><div class="info-card-label">Database</div><div class="info-card-value">PostgreSQL via Docker · Spring Data JPA</div></div>
+        <div class="info-card"><div class="info-card-label">Auth</div><div class="info-card-value">JWT tokens · BCrypt password hashing</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header"><span class="section-tag">01</span><div class="section-line"></div><h2>Tech Stack</h2></div>
+    <div class="stack-grid">
+      <div class="stack-card"><div class="stack-layer">Frontend</div><div class="stack-items"><span class="tag hi">React</span><span class="tag hi">TypeScript</span><span class="tag hi">Tailwind CSS</span><span class="tag">React Router</span><span class="tag">Vite</span></div></div>
+      <div class="stack-card"><div class="stack-layer">Backend</div><div class="stack-items"><span class="tag hi">Spring Boot</span><span class="tag hi">Java</span><span class="tag">Spring Security</span><span class="tag">Spring Data JPA</span><span class="tag">REST API</span></div></div>
+      <div class="stack-card"><div class="stack-layer">Database & Infra</div><div class="stack-items"><span class="tag hi">PostgreSQL</span><span class="tag hi">Docker</span><span class="tag">Hibernate</span><span class="tag">JWT</span></div></div>
+      <div class="stack-card"><div class="stack-layer">Dev Tools</div><div class="stack-items"><span class="tag">Git</span><span class="tag">Swagger / OpenAPI</span><span class="tag">DbVisualizer</span><span class="tag">Postman</span></div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header"><span class="section-tag">02</span><div class="section-line"></div><h2>Key Features</h2></div>
+    <div class="features-list">
+      <div class="feature-item"><div class="feature-icon">🗓️</div><div class="feature-title">Calendar Availability</div><div class="feature-desc">Connect Google Calendar, Apple Calendar, or import .ics files. The app overlays everyone's busy time and surfaces the best shared free windows automatically.</div></div>
+      <div class="feature-item"><div class="feature-icon">🗳️</div><div class="feature-title">Date Proposals & Voting</div><div class="feature-desc">Any group member can propose a date range. Everyone votes agree or disagree. When all members agree, the trip dates get confirmed and the itinerary tab unlocks.</div></div>
+      <div class="feature-item"><div class="feature-icon">📋</div><div class="feature-title">Trip Itinerary</div><div class="feature-desc">Once dates are confirmed, a day-by-day itinerary view opens. Members can add events with time, location, and notes — visible to the whole group or personal only.</div></div>
+      <div class="feature-item"><div class="feature-icon">👥</div><div class="feature-title">Friends & Invites</div><div class="feature-desc">Invite friends by email — works even if they haven't signed up yet. When they register with the invited email, the friend request appears automatically in their pending tab.</div></div>
+      <div class="feature-item"><div class="feature-icon">🔒</div><div class="feature-title">Auth & Guest Mode</div><div class="feature-desc">Full JWT authentication with BCrypt-hashed passwords. A guest mode lets visitors browse the app with locked write actions — good for demos and showcasing the UI.</div></div>
+      <div class="feature-item"><div class="feature-icon">🌙</div><div class="feature-title">Dark / Light Mode</div><div class="feature-desc">Full dark and light theme toggle. The design uses a seafoam teal + sky blue palette with floating geometric shape animations across both modes.</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header"><span class="section-tag">03</span><div class="section-line"></div><h2>Build Progress</h2></div>
+    <div class="progress-list">
+      <div class="progress-item"><div class="progress-line done"></div><div><div class="progress-label label-done">✓ Done</div><div class="progress-text">User registration & login with JWT auth</div></div></div>
+      <div class="progress-item"><div class="progress-line done"></div><div><div class="progress-label label-done">✓ Done</div><div class="progress-text">Full REST API — 34 endpoints across 9 resources (auth, user, trip, calendar, friends, itinerary, events, RSVP)</div></div></div>
+      <div class="progress-item"><div class="progress-line done"></div><div><div class="progress-label label-done">✓ Done</div><div class="progress-text">PostgreSQL schema with JPA entities — users, trips, friendships, calendars, itineraries, events</div></div></div>
+      <div class="progress-item"><div class="progress-line done"></div><div><div class="progress-label label-done">✓ Done</div><div class="progress-text">Frontend — trips page, calendar/availability page, friends page with invite system, profile panel, sidebar navigation</div></div></div>
+      <div class="progress-item"><div class="progress-line done"></div><div><div class="progress-label label-done">✓ Done</div><div class="progress-text">Friends invite system — works pre-registration, auto-links when invited email signs up</div></div></div>
+      <div class="progress-item"><div class="progress-line done"></div><div><div class="progress-label label-done">✓ Done</div><div class="progress-text">Date proposal & voting UI — agree/disagree per member, auto-confirms when all agree</div></div></div>
+      <div class="progress-item"><div class="progress-line done"></div><div><div class="progress-label label-done">✓ Done</div><div class="progress-text">Trip itinerary builder — date strip, per-day event view, add event modal with custom time picker</div></div></div>
+      <div class="progress-item"><div class="progress-line wip"></div><div><div class="progress-label label-wip">⟳ In Progress</div><div class="progress-text">Connecting frontend trips to backend — create trip → POST /api/trip, load trips → GET /api/trip</div></div></div>
+      <div class="progress-item"><div class="progress-line wip"></div><div><div class="progress-label label-wip">⟳ In Progress</div><div class="progress-text">Real availability data from connected calendars (replacing generated seed data)</div></div></div>
+      <div class="progress-item"><div class="progress-line todo"></div><div><div class="progress-label label-todo">○ Upcoming</div><div class="progress-text">Google OAuth integration for real calendar sync</div></div></div>
+      <div class="progress-item"><div class="progress-line todo"></div><div><div class="progress-label label-todo">○ Upcoming</div><div class="progress-text">Save itinerary events to database, RSVP to events</div></div></div>
+      <div class="progress-item"><div class="progress-line todo"></div><div><div class="progress-label label-todo">○ Upcoming</div><div class="progress-text">Trip member invite flow — invite friends to specific trips</div></div></div>
+      <div class="progress-item"><div class="progress-line todo"></div><div><div class="progress-label label-todo">○ Upcoming</div><div class="progress-text">Deployment — frontend on Vercel, backend on Railway or Render</div></div></div>
+    </div>
+  </div>
+
+  <div class="section" style="border-bottom:none;">
+    <div class="section-header"><span class="section-tag">04</span><div class="section-line"></div><h2>UI Design</h2></div>
+    <div class="preview-note">
+      Screenshots & live demo coming once the backend connection is complete.<br>
+      <span style="color:var(--accent);font-size:11px;letter-spacing:0.1em;">[ Built with React + TypeScript + Tailwind · Deep navy dark theme · Syne typeface ]</span>
+    </div>
+    <div class="design-grid">
+      <div class="design-card"><div class="design-card-label">Design System</div>Deep navy (#161622) base · Seafoam (#5DCAA5) accent · Sky blue (#38bdf8) secondary · Syne font</div>
+      <div class="design-card"><div class="design-card-label">Layout</div>Fixed sidebar navigation · Tabbed pages (Availability + Trip) · Slide-out profile panel</div>
+      <div class="design-card"><div class="design-card-label">Components</div>Calendar grid with availability dots · Custom scroll time picker · Date proposal cards · Itinerary strip</div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-name">Amy Zhang</div>
+  <p class="footer-copy">© 2026 · New York, NY · <a href="mailto:A.zhang0731@gmail.com" style="color:var(--accent);text-decoration:none;">A.zhang0731@gmail.com</a></p>
+  <a href="index.html" style="display:inline-flex;align-items:center;gap:0.5rem;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--bg);background:var(--accent);padding:8px 20px;border-radius:999px;text-decoration:none;transition:opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">← Back</a>
+</footer>
+
+<script>
+  function toggleTheme() {
+    const html = document.documentElement, btn = document.getElementById('theme-btn');
+    if (html.classList.contains('light')) { html.classList.remove('light'); btn.textContent = '☀ Light'; }
+    else { html.classList.add('light'); btn.textContent = '☾ Dark'; }
+  }
+  const canvas = document.getElementById('bg-canvas'), ctx = canvas.getContext('2d');
+  function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+  resize(); window.addEventListener('resize', resize);
+  const isLight = () => document.documentElement.classList.contains('light');
+  const COLORS = [[93,202,165],[56,189,248],[93,202,165],[150,220,200]];
+  function rnd(a,b){return a+Math.random()*(b-a);}
+  const shapes = Array.from({length:18},(_,i)=>({ type:['circle','triangle','diamond','ring'][i%4], x:Math.random()*window.innerWidth, y:Math.random()*window.innerHeight, size:rnd(18,60), dx:rnd(-0.15,0.15)||0.1, dy:rnd(-0.12,0.12)||0.08, rot:Math.random()*Math.PI*2, drot:rnd(-0.003,0.003), color:COLORS[i%COLORS.length], alpha:rnd(0.04,0.13) }));
+  function drawShape(s){ const [r,g,b]=s.color,a=isLight()?s.alpha*1.4:s.alpha; ctx.save(); ctx.translate(s.x,s.y); ctx.rotate(s.rot); ctx.strokeStyle=`rgba(${r},${g},${b},${a*2})`; ctx.fillStyle=`rgba(${r},${g},${b},${a*0.35})`; ctx.lineWidth=1.2;
+    if(s.type==='circle'){ctx.beginPath();ctx.arc(0,0,s.size,0,Math.PI*2);ctx.fill();ctx.stroke();}
+    else if(s.type==='ring'){ctx.beginPath();ctx.arc(0,0,s.size,0,Math.PI*2);ctx.stroke();ctx.beginPath();ctx.arc(0,0,s.size*0.6,0,Math.PI*2);ctx.stroke();}
+    else if(s.type==='triangle'){const h=s.size*Math.sqrt(3)/2;ctx.beginPath();ctx.moveTo(0,-s.size*0.7);ctx.lineTo(s.size*0.6,h*0.5);ctx.lineTo(-s.size*0.6,h*0.5);ctx.closePath();ctx.fill();ctx.stroke();}
+    else if(s.type==='diamond'){ctx.beginPath();ctx.moveTo(0,-s.size);ctx.lineTo(s.size*0.55,0);ctx.lineTo(0,s.size);ctx.lineTo(-s.size*0.55,0);ctx.closePath();ctx.fill();ctx.stroke();}
+    ctx.restore(); }
+  function animate(){ const W=canvas.width,H=canvas.height; ctx.clearRect(0,0,W,H);
+    shapes.forEach(s=>{ s.x+=s.dx; s.y+=s.dy; s.rot+=s.drot; const p=s.size+10;
+      if(s.x<-p)s.x=W+p; else if(s.x>W+p)s.x=-p;
+      if(s.y<-p)s.y=H+p; else if(s.y>H+p)s.y=-p;
+      drawShape(s); }); requestAnimationFrame(animate); }
+  requestAnimationFrame(animate);
+</script>
+</body>
+</html>

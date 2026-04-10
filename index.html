@@ -7,11 +7,11 @@
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg: #0a0a08;
-      --surface: #111110;
-      --border: #222220;
-      --accent: #c8f03c;
-      --accent2: #3cffa0;
+      --bg: #161622;
+      --surface: #1e1e2e;
+      --border: #32324a;
+      --accent: #5DCAA5;
+      --accent2: #38bdf8;
       --text: #e8e6e0;
       --muted: #6a6860;
       --loud: #ffffff;
@@ -22,15 +22,15 @@
       --bg: #faf8f4;
       --surface: #f0ede6;
       --border: #dedad2;
-      --accent: #6b21a8;
-      --accent2: #4c1d95;
+      --accent: #5DCAA5;
+      --accent2: #0284c7;
       --text: #1c1a16;
       --muted: #8a8680;
       --loud: #0a0a08;
     }
 
-    html.light .open-badge { color: #16a34a; border-color: #16a34a; }
-    html.light .open-dot { background: #16a34a; }
+    html.light .open-badge { color: #0284c7; border-color: #0284c7; }
+    html.light .open-dot { background: #0284c7; }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
@@ -45,15 +45,26 @@
       min-height: 100vh;
     }
 
+    /* ── Background design ── */
     body::before {
       content: '';
       position: fixed;
       inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      background:
+        radial-gradient(ellipse 80% 60% at 10% 10%, rgba(93,202,165,0.18) 0%, transparent 55%),
+        radial-gradient(ellipse 60% 70% at 90% 80%, rgba(56,189,248,0.14) 0%, transparent 55%),
+        radial-gradient(ellipse 50% 50% at 55% 45%, rgba(93,202,165,0.07) 0%, transparent 60%);
       pointer-events: none;
-      z-index: 9999;
-      opacity: 0.4;
+      z-index: 0;
     }
+
+    html.light body::before {
+      background:
+        radial-gradient(ellipse 80% 60% at 10% 10%, rgba(93,202,165,0.15) 0%, transparent 55%),
+        radial-gradient(ellipse 60% 70% at 90% 80%, rgba(56,189,248,0.12) 0%, transparent 55%);
+    }
+
+    .sidebar, .main { position: relative; z-index: 1; }
 
     /* ── Sidebar ── */
     .sidebar {
@@ -61,7 +72,9 @@
       min-height: 100vh;
       position: fixed;
       top: 0; left: 0; bottom: 0;
-      background: var(--surface);
+      background: color-mix(in srgb, var(--surface) 85%, transparent);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       border-right: 1px solid var(--border);
       display: flex;
       flex-direction: column;
@@ -130,11 +143,11 @@
     .nav-links a:hover, .nav-links a.active {
       color: var(--accent);
       border-left-color: var(--accent);
-      background: rgba(200, 240, 60, 0.04);
+      background: rgba(93, 202, 165, 0.06);
     }
 
     html.light .nav-links a:hover,
-    html.light .nav-links a.active { background: rgba(107, 33, 168, 0.06); }
+    html.light .nav-links a.active { background: rgba(93, 202, 165, 0.08); }
 
     .nav-dot {
       width: 5px; height: 5px;
@@ -359,7 +372,8 @@
       text-transform: uppercase;
       color: var(--accent);
       border: 1px solid var(--accent);
-      padding: 3px 8px;
+      padding: 3px 10px;
+      border-radius: 999px;
       flex-shrink: 0;
     }
 
@@ -380,6 +394,8 @@
       border: 1px solid var(--border);
       background: var(--surface);
       position: relative;
+      border-radius: 16px;
+      overflow: hidden;
     }
 
     .about-main::before {
@@ -398,6 +414,7 @@
       padding: 1rem 1.25rem;
       border: 1px solid var(--border);
       background: var(--surface);
+      border-radius: 12px;
       transition: border-color 0.2s;
     }
     .info-card:hover { border-color: var(--accent); }
@@ -422,6 +439,7 @@
       background: var(--surface);
       position: relative;
       overflow: hidden;
+      border-radius: 20px;
     }
 
     .edu-card::before {
@@ -442,54 +460,69 @@
       font-size: 10px;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      padding: 3px 8px;
+      padding: 3px 10px;
       border: 1px solid var(--border);
       color: var(--muted);
+      border-radius: 999px;
     }
     .tag.highlight { border-color: var(--accent2); color: var(--accent2); }
 
     /* ── Projects ── */
     .projects-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5px;
-      background: var(--border);
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.25rem;
+      background: transparent;
     }
 
     .project-card {
-      background: var(--bg);
+      background: var(--surface);
+      border: 1px solid var(--border);
       padding: 2rem;
       position: relative;
       overflow: hidden;
-      transition: background 0.3s;
+      border-radius: 20px;
+      transition: background 0.3s, border-color 0.3s;
     }
 
-    .project-card:hover { background: var(--surface); }
+    .project-card:hover { background: var(--surface); border-color: var(--accent); }
 
     .project-card::after {
       content: '';
       position: absolute;
       bottom: 0; left: 0; right: 0;
-      height: 2px;
+      height: 3px;
       background: linear-gradient(90deg, var(--accent), var(--accent2));
       transform: scaleX(0);
       transform-origin: left;
+      border-radius: 0 0 20px 20px;
       transition: transform 0.4s ease;
     }
 
     .project-card:hover::after { transform: scaleX(1); }
 
     .project-num { font-family: 'Bebas Neue', sans-serif; font-size: 3.5rem; color: var(--border); line-height: 1; margin-bottom: 0.4rem; }
-    .project-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; color: var(--loud); letter-spacing: 0.03em; margin-bottom: 0.4rem; }
-    .project-meta { font-size: 10px; color: var(--accent); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 1rem; }
-    .project-desc { font-size: 12px; color: var(--muted); line-height: 1.7; }
+    .project-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.9rem; color: var(--loud); letter-spacing: 0.03em; margin-bottom: 0.4rem; }
+    .project-meta { font-size: 11px; color: var(--accent); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 1rem; }
+    .project-desc { font-size: 13.5px; color: var(--muted); line-height: 1.75; }
     .project-stack { margin-top: 1.5rem; display: flex; flex-wrap: wrap; gap: 0.4rem; }
 
     /* ── Experience ── */
-    .exp-list { display: flex; flex-direction: column; gap: 1.5rem; }
-    .exp-item { display: grid; grid-template-columns: 3px 1fr; gap: 1.5rem; }
-    .exp-line { background: var(--border); border-radius: 2px; }
-    .exp-item:hover .exp-line { background: var(--accent); transition: background 0.3s; }
+    .exp-list { display: flex; flex-direction: column; gap: 1.25rem; }
+    .exp-item {
+      display: grid;
+      grid-template-columns: 4px 1fr;
+      gap: 1.5rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 1.75rem 1.75rem 1.75rem 0;
+      overflow: hidden;
+      transition: border-color 0.3s;
+    }
+    .exp-item:hover { border-color: var(--accent); }
+    .exp-line { background: var(--border); border-radius: 20px 0 0 20px; transition: background 0.3s; }
+    .exp-item:hover .exp-line { background: var(--accent); }
     .exp-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; color: var(--loud); letter-spacing: 0.04em; }
     .exp-company { font-size: 11px; color: var(--accent); letter-spacing: 0.1em; text-transform: uppercase; }
     .exp-date { font-size: 11px; color: var(--muted); }
@@ -578,12 +611,16 @@
       section { padding: 3rem 1.5rem; }
       .about-grid { grid-template-columns: 1fr; }
       .edu-card { grid-template-columns: 1fr; }
+      .projects-grid { grid-template-columns: 1fr; }
       footer { padding: 2rem 1.5rem; flex-direction: column; align-items: flex-start; }
       .bg-number { display: none; }
     }
   </style>
 </head>
 <body>
+
+<!-- Background canvas -->
+<canvas id="bg-canvas" style="position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:0.6;"></canvas>
 
 <!-- Hamburger -->
 <button class="hamburger" id="hamburger" onclick="toggleSidebar()">
@@ -741,6 +778,23 @@
         </div>
         <p style="margin-top:1rem;font-size:11px;color:var(--accent);font-family:'DM Mono',monospace;letter-spacing:0.08em;">VIEW PROJECT →</p>
       </div>
+      <div class="project-card" onclick="window.location.href='calendar.html'" style="cursor:pointer;">
+        <div class="project-num">04</div>
+        <div class="project-title">🗺️ Voyage</div>
+        <div class="project-meta">Team of 2 · Full-Stack · 2026 — In Progress</div>
+        <p class="project-desc">A shared calendar and trip planning app. Connect your calendar, find the dates that work for everyone, vote on proposals, and build out a group itinerary together. Features JWT auth, a 34-endpoint REST API, and a custom availability algorithm.</p>
+        <div class="project-stack">
+          <span class="tag">React</span>
+          <span class="tag">TypeScript</span>
+          <span class="tag">Tailwind CSS</span>
+          <span class="tag">Spring Boot</span>
+          <span class="tag">Java</span>
+          <span class="tag">PostgreSQL</span>
+          <span class="tag">Docker</span>
+          <span class="tag">JWT</span>
+        </div>
+        <p style="margin-top:1rem;font-size:11px;color:var(--accent);font-family:'DM Mono',monospace;letter-spacing:0.08em;">VIEW PROJECT →</p>
+      </div>
     </div>
   </section>
 
@@ -806,9 +860,16 @@
         <div class="skill-category-title">Frameworks & Tools</div>
         <div class="skill-chips">
           <span class="skill-chip">React</span>
+          <span class="skill-chip">Spring Boot</span>
+          <span class="skill-chip">Tailwind CSS</span>
           <span class="skill-chip">Svelte</span>
           <span class="skill-chip">Node.js</span>
           <span class="skill-chip">MongoDB</span>
+          <span class="skill-chip">PostgreSQL</span>
+          <span class="skill-chip">Docker</span>
+          <span class="skill-chip">JWT</span>
+          <span class="skill-chip">REST API</span>
+          <span class="skill-chip">Swagger</span>
           <span class="skill-chip">Axios</span>
           <span class="skill-chip">Git</span>
           <span class="skill-chip">Tauri</span>
@@ -834,7 +895,7 @@
   <footer>
     <div class="footer-name">Amy Zhang</div>
     <p class="footer-copy">© 2026 · New York, NY · <a href="mailto:A.zhang0731@gmail.com" style="color:var(--accent);text-decoration:none;">A.zhang0731@gmail.com</a></p>
-    <a href="Resume.pdf" target="_blank" download="Amy_Zhang_Resume.pdf" style="display:inline-flex;align-items:center;gap:0.5rem;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--bg);background:var(--accent);padding:8px 18px;text-decoration:none;transition:opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">↓ Resume</a>
+    <a href="Resume.pdf" target="_blank" download="Amy_Zhang_Resume.pdf" style="display:inline-flex;align-items:center;gap:0.5rem;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--bg);background:var(--accent);padding:8px 20px;border-radius:999px;text-decoration:none;transition:opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">↓ Resume</a>
   </footer>
 
 </div>
@@ -866,20 +927,116 @@
 
   window.addEventListener('scroll', () => {
     let current = '';
-    sections.forEach(s => {
-      if (window.scrollY >= s.offsetTop - 200) current = s.id;
+    sections.forEach(sec => {
+      if (window.scrollY >= sec.offsetTop - 120) current = sec.id;
     });
     navLinks.forEach(a => {
-      a.classList.remove('active');
-      if (a.getAttribute('href') === '#' + current) a.classList.add('active');
-    });
-  });
-
-  navLinks.forEach(a => {
-    a.addEventListener('click', () => {
-      if (window.innerWidth <= 768) toggleSidebar();
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
     });
   });
 </script>
+
+<script>
+  // Floating geometric shapes background
+  const canvas = document.getElementById('bg-canvas');
+  const ctx = canvas.getContext('2d');
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const isLight = () => document.documentElement.classList.contains('light');
+
+  const COLORS = [
+    [93, 202, 165],
+    [56, 189, 248],
+    [93, 202, 165],
+    [150, 220, 200],
+  ];
+
+  function randomBetween(a, b) { return a + Math.random() * (b - a); }
+
+  const shapes = Array.from({ length: 18 }, (_, i) => ({
+    type: ['circle', 'triangle', 'diamond', 'ring'][i % 4],
+    x: Math.random() * window.innerWidth,
+    y: Math.random() * window.innerHeight,
+    size: randomBetween(18, 60),
+    dx: randomBetween(-0.15, 0.15) || 0.1,
+    dy: randomBetween(-0.12, 0.12) || 0.08,
+    rot: Math.random() * Math.PI * 2,
+    drot: randomBetween(-0.003, 0.003),
+    color: COLORS[i % COLORS.length],
+    alpha: randomBetween(0.04, 0.13),
+  }));
+
+  function drawShape(s) {
+    const [r, g, b] = s.color;
+    const a = isLight() ? s.alpha * 1.4 : s.alpha;
+    ctx.save();
+    ctx.translate(s.x, s.y);
+    ctx.rotate(s.rot);
+    ctx.strokeStyle = `rgba(${r},${g},${b},${a * 2})`;
+    ctx.fillStyle   = `rgba(${r},${g},${b},${a * 0.35})`;
+    ctx.lineWidth = 1.2;
+
+    if (s.type === 'circle') {
+      ctx.beginPath();
+      ctx.arc(0, 0, s.size, 0, Math.PI * 2);
+      ctx.fill(); ctx.stroke();
+
+    } else if (s.type === 'ring') {
+      ctx.beginPath();
+      ctx.arc(0, 0, s.size, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(0, 0, s.size * 0.6, 0, Math.PI * 2);
+      ctx.stroke();
+
+    } else if (s.type === 'triangle') {
+      const h = s.size * Math.sqrt(3) / 2;
+      ctx.beginPath();
+      ctx.moveTo(0, -s.size * 0.7);
+      ctx.lineTo( s.size * 0.6,  h * 0.5);
+      ctx.lineTo(-s.size * 0.6,  h * 0.5);
+      ctx.closePath();
+      ctx.fill(); ctx.stroke();
+
+    } else if (s.type === 'diamond') {
+      ctx.beginPath();
+      ctx.moveTo(0, -s.size);
+      ctx.lineTo(s.size * 0.55, 0);
+      ctx.lineTo(0,  s.size);
+      ctx.lineTo(-s.size * 0.55, 0);
+      ctx.closePath();
+      ctx.fill(); ctx.stroke();
+    }
+
+    ctx.restore();
+  }
+
+  function animate() {
+    const W = canvas.width, H = canvas.height;
+    ctx.clearRect(0, 0, W, H);
+
+    shapes.forEach(s => {
+      s.x += s.dx;
+      s.y += s.dy;
+      s.rot += s.drot;
+      const pad = s.size + 10;
+      if (s.x < -pad) s.x = W + pad;
+      else if (s.x > W + pad) s.x = -pad;
+      if (s.y < -pad) s.y = H + pad;
+      else if (s.y > H + pad) s.y = -pad;
+      drawShape(s);
+    });
+
+    requestAnimationFrame(animate);
+  }
+  requestAnimationFrame(animate);
+</script>
+
 </body>
 </html>
