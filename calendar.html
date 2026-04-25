@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Voyage — Amy Zhang</title>
+  <title>GYST — Amy Zhang</title>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
     :root {
@@ -111,11 +111,75 @@
     footer { padding: 3rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; border-top: 1px solid var(--border); position: relative; z-index: 1; }
     .footer-name { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--loud); }
     .footer-copy { font-size: 11px; color: var(--muted); letter-spacing: 0.08em; }
-    @media (max-width: 768px) {
-      .topnav { padding: 1rem 1.5rem; } .hero { padding: 3rem 1.5rem; } .content { padding: 0 1.5rem; }
-      .overview-grid { grid-template-columns: 1fr; } .bg-number { display: none; }
-      footer { padding: 2rem 1.5rem; flex-direction: column; align-items: flex-start; }
+    .gallery-section { padding: 4rem 0; border-bottom: 1px solid var(--border); }
+    .gallery-grid {
+      columns: 2;
+      column-gap: 1rem;
+      margin-top: 2rem;
     }
+    .gallery-item {
+      break-inside: avoid;
+      margin-bottom: 1rem;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      cursor: pointer;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .gallery-item:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .gallery-item img { display: block; width: 100%; height: auto; }
+
+    /* Lightbox */
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      cursor: pointer;
+    }
+    .lightbox.open { display: flex; }
+    .lightbox img {
+      max-width: 90vw;
+      max-height: 90vh;
+      border-radius: 12px;
+      object-fit: contain;
+      cursor: default;
+      box-shadow: 0 0 80px rgba(0,0,0,0.6);
+    }
+    .lightbox-close {
+      position: absolute;
+      top: 1.5rem; right: 2rem;
+      font-size: 2rem;
+      color: #fff;
+      cursor: pointer;
+      line-height: 1;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+    .lightbox-close:hover { opacity: 1; }
+    .lightbox-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #fff;
+      font-size: 1.5rem;
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .lightbox-nav:hover { background: rgba(255,255,255,0.2); }
+    .lightbox-prev { left: 1.5rem; }
+    .lightbox-next { right: 1.5rem; }
+    @media (max-width: 768px) { .gallery-grid { columns: 1; } }
   </style>
 </head>
 <body>
@@ -124,7 +188,7 @@
 
 <nav class="topnav">
   <a href="index.html" class="back-link">← Back to Portfolio</a>
-  <span class="topnav-name">Amy Zhang</span>
+  <span class="topnav-name">Amy Zhang — GYST</span>
   <div class="topnav-right">
     <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn">☀ Light</button>
   </div>
@@ -132,15 +196,15 @@
 
 <div class="hero">
   <div class="content">
-    <div class="wip-badge"><span class="wip-dot"></span>In Progress</div>
+    <div class="wip-badge" style="border-color:var(--accent2);color:var(--accent2);"><span class="wip-dot" style="background:var(--accent2);animation:none;"></span>Completed</div>
     <p class="hero-label">Side Project · 2026</p>
-    <h1>Voyage<span class="outline">Plan Together</span></h1>
-    <p class="hero-sub">A shared calendar and trip planning app — find the dates that work for everyone, coordinate itineraries, and plan group trips without the back-and-forth.</p>
+    <h1>GYST<span class="outline">Plan Together</span></h1>
+    <p class="hero-sub">A full-stack group trip planning app — import your calendar, see shared availability, propose and vote on dates, then build a day-by-day itinerary together. No more "when is everyone free?" group chats.</p>
     <div class="hero-meta">
       <div class="meta-item"><strong>Team</strong>2 people</div>
-      <div class="meta-item"><strong>Timeline</strong>2026 — ongoing</div>
+      <div class="meta-item"><strong>Timeline</strong>2026</div>
       <div class="meta-item"><strong>Role</strong>Full-Stack (Frontend + Backend)</div>
-      <div class="meta-item"><strong>Status</strong>Active Development</div>
+      <div class="meta-item"><strong>Status</strong>Complete</div>
     </div>
     <div class="hero-actions">
       <span class="btn btn-disabled">GitHub (Private) ↗</span>
@@ -157,8 +221,8 @@
     <div class="overview-grid">
       <div class="overview-main">
         <p>Voyage started from a real problem — planning trips with a group of friends means an endless cycle of "when are you free?" messages, calendar screenshots, and someone inevitably missing a date that works for everyone.</p>
-        <p>The app lets users connect their calendars (Google, Apple, or .ics import), find shared free windows automatically, propose trip dates, vote on them, and build out an itinerary together once dates are confirmed.</p>
-        <p>Built with a React + TypeScript frontend styled with Tailwind, and a Spring Boot REST API backend with JWT authentication, PostgreSQL, and Docker.</p>
+        <p>The finished app lets users import calendars via .ics (Google, Apple), overlays everyone's busy times on a shared grid, surfaces best availability windows using a custom scoring algorithm, and lets any group member propose date ranges with per-member voting. Once dates are confirmed, the itinerary tab unlocks for day-by-day event planning.</p>
+        <p>The friend invite system works before the invitee even has an account — invites sent to an email auto-link to a user profile the moment they register. The full REST API covers 34 endpoints across 9 resources, secured with JWT and BCrypt.</p>
       </div>
       <div class="overview-sidebar">
         <div class="info-card"><div class="info-card-label">My Responsibilities</div><div class="info-card-value">Frontend UI, backend API, auth system, database schema, friend/invite system</div></div>
@@ -172,9 +236,9 @@
   <div class="section">
     <div class="section-header"><span class="section-tag">01</span><div class="section-line"></div><h2>Tech Stack</h2></div>
     <div class="stack-grid">
-      <div class="stack-card"><div class="stack-layer">Frontend</div><div class="stack-items"><span class="tag hi">React</span><span class="tag hi">TypeScript</span><span class="tag hi">Tailwind CSS</span><span class="tag">React Router</span><span class="tag">Vite</span></div></div>
-      <div class="stack-card"><div class="stack-layer">Backend</div><div class="stack-items"><span class="tag hi">Spring Boot</span><span class="tag hi">Java</span><span class="tag">Spring Security</span><span class="tag">Spring Data JPA</span><span class="tag">REST API</span></div></div>
-      <div class="stack-card"><div class="stack-layer">Database & Infra</div><div class="stack-items"><span class="tag hi">PostgreSQL</span><span class="tag hi">Docker</span><span class="tag">Hibernate</span><span class="tag">JWT</span></div></div>
+      <div class="stack-card"><div class="stack-layer">Frontend</div><div class="stack-items"><span class="tag hi">React</span><span class="tag hi">TypeScript</span><span class="tag hi">Tailwind CSS</span><span class="tag">React Router</span><span class="tag">Vite</span><span class="tag">Context API</span></div></div>
+      <div class="stack-card"><div class="stack-layer">Backend</div><div class="stack-items"><span class="tag hi">Spring Boot</span><span class="tag hi">Java</span><span class="tag">Spring Security</span><span class="tag">Spring Data JPA</span><span class="tag">iCal4j</span><span class="tag">REST API</span></div></div>
+      <div class="stack-card"><div class="stack-layer">Database & Infra</div><div class="stack-items"><span class="tag hi">PostgreSQL</span><span class="tag hi">Docker</span><span class="tag">Hibernate</span><span class="tag">JWT</span><span class="tag">BCrypt</span></div></div>
       <div class="stack-card"><div class="stack-layer">Dev Tools</div><div class="stack-items"><span class="tag">Git</span><span class="tag">Swagger / OpenAPI</span><span class="tag">DbVisualizer</span><span class="tag">Postman</span></div></div>
     </div>
   </div>
@@ -194,32 +258,61 @@
   <div class="section">
     <div class="section-header"><span class="section-tag">03</span><div class="section-line"></div><h2>Build Progress</h2></div>
     <div class="progress-list">
-      <div class="progress-item"><div class="progress-line done"></div><div><div class="progress-label label-done">✓ Done</div><div class="progress-text">User registration & login with JWT auth</div></div></div>
-      <div class="progress-item"><div class="progress-line done"></div><div><div class="progress-label label-done">✓ Done</div><div class="progress-text">Full REST API — 34 endpoints across 9 resources (auth, user, trip, calendar, friends, itinerary, events, RSVP)</div></div></div>
-      <div class="progress-item"><div class="progress-line done"></div><div><div class="progress-label label-done">✓ Done</div><div class="progress-text">PostgreSQL schema with JPA entities — users, trips, friendships, calendars, itineraries, events</div></div></div>
-      <div class="progress-item"><div class="progress-line done"></div><div><div class="progress-label label-done">✓ Done</div><div class="progress-text">Frontend — trips page, calendar/availability page, friends page with invite system, profile panel, sidebar navigation</div></div></div>
-      <div class="progress-item"><div class="progress-line done"></div><div><div class="progress-label label-done">✓ Done</div><div class="progress-text">Friends invite system — works pre-registration, auto-links when invited email signs up</div></div></div>
-      <div class="progress-item"><div class="progress-line done"></div><div><div class="progress-label label-done">✓ Done</div><div class="progress-text">Date proposal & voting UI — agree/disagree per member, auto-confirms when all agree</div></div></div>
-      <div class="progress-item"><div class="progress-line done"></div><div><div class="progress-label label-done">✓ Done</div><div class="progress-text">Trip itinerary builder — date strip, per-day event view, add event modal with custom time picker</div></div></div>
-      <div class="progress-item"><div class="progress-line wip"></div><div><div class="progress-label label-wip">⟳ In Progress</div><div class="progress-text">Connecting frontend trips to backend — create trip → POST /api/trip, load trips → GET /api/trip</div></div></div>
-      <div class="progress-item"><div class="progress-line wip"></div><div><div class="progress-label label-wip">⟳ In Progress</div><div class="progress-text">Real availability data from connected calendars (replacing generated seed data)</div></div></div>
-      <div class="progress-item"><div class="progress-line todo"></div><div><div class="progress-label label-todo">○ Upcoming</div><div class="progress-text">Google OAuth integration for real calendar sync</div></div></div>
-      <div class="progress-item"><div class="progress-line todo"></div><div><div class="progress-label label-todo">○ Upcoming</div><div class="progress-text">Save itinerary events to database, RSVP to events</div></div></div>
-      <div class="progress-item"><div class="progress-line todo"></div><div><div class="progress-label label-todo">○ Upcoming</div><div class="progress-text">Trip member invite flow — invite friends to specific trips</div></div></div>
-      <div class="progress-item"><div class="progress-line todo"></div><div><div class="progress-label label-todo">○ Upcoming</div><div class="progress-text">Deployment — frontend on Vercel, backend on Railway or Render</div></div></div>
+      <div class="progress-item"><div class="progress-line done"></div><div><div class="progress-label label-done">✓ Done</div><div class="progress-text">User registration & login with JWT auth and BCrypt password hashing</div></div></div>
+      <div class="progress-item"><div class="progress-line done"></div><div><div class="progress-label label-done">✓ Done</div><div class="progress-text">Full REST API — 34 endpoints across 9 resources (auth, user, trip, calendar, friends, itinerary, events, RSVP, availability)</div></div></div>
+      <div class="progress-item"><div class="progress-line done"></div><div><div class="progress-label label-done">✓ Done</div><div class="progress-text">PostgreSQL schema with JPA entities — users, trips, friendships, calendars, calendar events, itineraries, trip events</div></div></div>
+      <div class="progress-item"><div class="progress-line done"></div><div><div class="progress-label label-done">✓ Done</div><div class="progress-text">Frontend — trips page, calendar/availability page, friends page with invite system, profile panel, sidebar navigation, light/dark theme</div></div></div>
+      <div class="progress-item"><div class="progress-line done"></div><div><div class="progress-label label-done">✓ Done</div><div class="progress-text">Friends invite system — works pre-registration; auto-links to a user account when the invited email signs up</div></div></div>
+      <div class="progress-item"><div class="progress-line done"></div><div><div class="progress-label label-done">✓ Done</div><div class="progress-text">Date proposal & voting UI — agree/disagree per member, auto-confirms when all agree, unlocks itinerary tab</div></div></div>
+      <div class="progress-item"><div class="progress-line done"></div><div><div class="progress-label label-done">✓ Done</div><div class="progress-text">Trip itinerary builder — date strip, per-day event view, add event modal with custom scroll time picker</div></div></div>
+      <div class="progress-item"><div class="progress-line done"></div><div><div class="progress-label label-done">✓ Done</div><div class="progress-text">Frontend fully connected to backend — create/fetch/delete trips, invite members, RSVP, leave trip, respond to invites</div></div></div>
+      <div class="progress-item"><div class="progress-line done"></div><div><div class="progress-label label-done">✓ Done</div><div class="progress-text">Real calendar availability from imported .ics files — iCal4j parsing, per-user and per-trip availability endpoints, live overlay on the shared calendar grid</div></div></div>
+      <div class="progress-item"><div class="progress-line done"></div><div><div class="progress-label label-done">✓ Done</div><div class="progress-text">Custom availability algorithm — scores date windows by group overlap, ranks and surfaces best matches automatically</div></div></div>
+      <div class="progress-item"><div class="progress-line done"></div><div><div class="progress-label label-done">✓ Done</div><div class="progress-text">Trip member invite flow — owner invites friends, members get PENDING status, can accept or decline, trip status reflects responses</div></div></div>
+      <div class="progress-item"><div class="progress-line done"></div><div><div class="progress-label label-done">✓ Done</div><div class="progress-text">Guest mode — full read-only browse of the UI with locked write actions; good for demos</div></div></div>
     </div>
   </div>
 
-  <div class="section" style="border-bottom:none;">
-    <div class="section-header"><span class="section-tag">04</span><div class="section-line"></div><h2>UI Design</h2></div>
-    <div class="preview-note">
-      Screenshots & live demo coming once the backend connection is complete.<br>
-      <span style="color:var(--accent);font-size:11px;letter-spacing:0.1em;">[ Built with React + TypeScript + Tailwind · Deep navy dark theme · Syne typeface ]</span>
+  <div class="gallery-section" style="border-bottom:none;">
+    <div class="section-header"><span class="section-tag">05</span><div class="section-line"></div><h2>Screenshots</h2></div>
+    <div class="gallery-grid" id="gallery">
+      <div class="gallery-item" onclick="openLightbox(0)"><img src="images2/image1.png" alt="GYST screenshot 1" loading="lazy"></div>
+      <div class="gallery-item" onclick="openLightbox(1)"><img src="images2/image2.png" alt="GYST screenshot 2" loading="lazy"></div>
+      <div class="gallery-item" onclick="openLightbox(2)"><img src="images2/image3.png" alt="GYST screenshot 3" loading="lazy"></div>
+      <div class="gallery-item" onclick="openLightbox(3)"><img src="images2/image4.png" alt="GYST screenshot 4" loading="lazy"></div>
+      <div class="gallery-item" onclick="openLightbox(4)"><img src="images2/image5.png" alt="GYST screenshot 5" loading="lazy"></div>
+      <div class="gallery-item" onclick="openLightbox(5)"><img src="images2/image6.png" alt="GYST screenshot 6" loading="lazy"></div>
+      <div class="gallery-item" onclick="openLightbox(6)"><img src="images2/image7.png" alt="GYST screenshot 7" loading="lazy"></div>
+      <div class="gallery-item" onclick="openLightbox(7)"><img src="images2/image8.png" alt="GYST screenshot 8" loading="lazy"></div>
+      <div class="gallery-item" onclick="openLightbox(8)"><img src="images2/image9.png" alt="GYST screenshot 9" loading="lazy"></div>
+      <div class="gallery-item" onclick="openLightbox(9)"><img src="images2/image10.png" alt="GYST screenshot 10" loading="lazy"></div>
+      <div class="gallery-item" onclick="openLightbox(10)"><img src="images2/image11.png" alt="GYST screenshot 11" loading="lazy"></div>
+      <div class="gallery-item" onclick="openLightbox(11)"><img src="images2/image12.png" alt="GYST screenshot 12" loading="lazy"></div>
+      <div class="gallery-item" onclick="openLightbox(12)"><img src="images2/image13.png" alt="GYST screenshot 13" loading="lazy"></div>
+      <div class="gallery-item" onclick="openLightbox(13)"><img src="images2/image14.png" alt="GYST screenshot 14" loading="lazy"></div>
+      <div class="gallery-item" onclick="openLightbox(14)"><img src="images2/image15.png" alt="GYST screenshot 15" loading="lazy"></div>
+      <div class="gallery-item" onclick="openLightbox(15)"><img src="images2/image16.png" alt="GYST screenshot 16" loading="lazy"></div>
+      <div class="gallery-item" onclick="openLightbox(16)"><img src="images2/image17.png" alt="GYST screenshot 17" loading="lazy"></div>
+      <div class="gallery-item" onclick="openLightbox(17)"><img src="images2/image18.png" alt="GYST screenshot 18" loading="lazy"></div>
+      <div class="gallery-item" onclick="openLightbox(18)"><img src="images2/image19.png" alt="GYST screenshot 19" loading="lazy"></div>
+      <div class="gallery-item" onclick="openLightbox(19)"><img src="images2/image20.png" alt="GYST screenshot 20" loading="lazy"></div>
     </div>
+  </div>
+
+</div>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+  <span class="lightbox-close" onclick="closeLightbox()">×</span>
+  <button class="lightbox-nav lightbox-prev" onclick="event.stopPropagation();changeImage(-1)">‹</button>
+  <img id="lightbox-img" src="" alt="">
+  <button class="lightbox-nav lightbox-next" onclick="event.stopPropagation();changeImage(1)">›</button>
+</div>
     <div class="design-grid">
-      <div class="design-card"><div class="design-card-label">Design System</div>Deep navy (#161622) base · Seafoam (#5DCAA5) accent · Sky blue (#38bdf8) secondary · Syne font</div>
-      <div class="design-card"><div class="design-card-label">Layout</div>Fixed sidebar navigation · Tabbed pages (Availability + Trip) · Slide-out profile panel</div>
-      <div class="design-card"><div class="design-card-label">Components</div>Calendar grid with availability dots · Custom scroll time picker · Date proposal cards · Itinerary strip</div>
+      <div class="design-card"><div class="design-card-label">Design System</div>Deep navy (#1e1e2e) base · Violet (#8b5cf6) primary accent · Teal (#2dd4bf) secondary · Syne typeface throughout</div>
+      <div class="design-card"><div class="design-card-label">Layout</div>Fixed sidebar navigation · Tabbed trip detail (Availability + Trip tabs) · Slide-out profile panel with calendar import</div>
+      <div class="design-card"><div class="design-card-label">Calendar Components</div>Interactive grid with per-day availability dots · Click-to-inspect day panel · Shared free window visualization · Best availability windows ranking panel</div>
+      <div class="design-card"><div class="design-card-label">Custom Components</div>Scroll time picker with direct input · Date proposal voting cards · Itinerary day strip · Avatar + pill status system · Guest mode lock UI</div>
     </div>
   </div>
 
@@ -237,6 +330,32 @@
     if (html.classList.contains('light')) { html.classList.remove('light'); btn.textContent = '☀ Light'; }
     else { html.classList.add('light'); btn.textContent = '☾ Dark'; }
   }
+
+  // Lightbox
+  const TOTAL = 20;
+  let currentIdx = 0;
+  function openLightbox(idx) {
+    currentIdx = idx;
+    document.getElementById('lightbox-img').src = 'images2/image' + (idx + 1) + '.png';
+    document.getElementById('lightbox').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLightbox(e) {
+    if (e && e.target !== document.getElementById('lightbox') && !e.target.classList.contains('lightbox-close')) return;
+    document.getElementById('lightbox').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  function changeImage(dir) {
+    currentIdx = (currentIdx + dir + TOTAL) % TOTAL;
+    document.getElementById('lightbox-img').src = 'images2/image' + (currentIdx + 1) + '.png';
+  }
+  document.addEventListener('keydown', function(e) {
+    const lb = document.getElementById('lightbox');
+    if (!lb.classList.contains('open')) return;
+    if (e.key === 'Escape') { lb.classList.remove('open'); document.body.style.overflow = ''; }
+    if (e.key === 'ArrowRight') changeImage(1);
+    if (e.key === 'ArrowLeft') changeImage(-1);
+  });
   const canvas = document.getElementById('bg-canvas'), ctx = canvas.getContext('2d');
   function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
   resize(); window.addEventListener('resize', resize);
